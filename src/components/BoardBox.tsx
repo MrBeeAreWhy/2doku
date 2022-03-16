@@ -1,52 +1,97 @@
-import React, { ChangeEvent } from 'react';
-import { useAppSelector, useAppDispatch } from '../app/hooks';
+import React, { MouseEvent } from 'react';
 import { updatePlays } from '../slices/boardSlice';
+import { connect } from 'react-redux'
+
+const mapDispatch = (dispatch: any) => {
+  return {
+      updatePlays: (payload: any) => dispatch(updatePlays(payload))
+  }
+};
 
 type BoardBoxProps = {
   displayValue: string;
   preset: boolean;
   location: number[];
+  updatePlays: Function;
+  gameWon: boolean;
 };
 
-function BoardBox({ displayValue, preset, location }: BoardBoxProps): JSX.Element {
-  const dispatch = useAppDispatch();
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const boxValue = Number(event.target.value);
-    if (isNaN(boxValue)) {
-      event.target.value = '';
-      event.target.className = 'error';
-      dispatch(updatePlays({value: 0, i:location[0], j:location[1]}));
-      setTimeout(()=>{event.target.className = 'BoardBoxFilled'}, 1500)
-      return;
+class BoardBox extends React.Component<BoardBoxProps> { //need access to shouldComponentUpdate, so utilizing class syntaxt for this component -- prevents a lot of rerenders
+  shouldComponentUpdate(nextProps:any):boolean {
+    if (nextProps.gameWon !== this.props.gameWon){
+      return true;
     }
-    if (boxValue > 4){
-      event.target.value = '';
-      event.target.className = 'error';
-      dispatch(updatePlays({value: 0, i:location[0], j:location[1]}));
-      setTimeout(()=>{event.target.className = 'BoardBoxFilled'}, 1500)
-      return;
+    if (nextProps.preset === true || nextProps.displayValue === this.props.displayValue){
+      //don't re-render if it's preset or if the display value did not change
+      return false;
     }
-    if (boxValue === 0){
-      event.target.value = '';
-      dispatch(updatePlays({value: 0, i:location[0], j:location[1]}));
-      return;
-    }
-    dispatch(updatePlays({value: boxValue, i:location[0], j:location[1]}));
+    return true;
   }
-
-  return (
-    <div>
-    {preset ? 
-    <div className="BoardBoxPreset inactive" >
-      {displayValue}
-    </div>
-    :
-    <div className={displayValue === '' ? 'BoardBox' : 'BoardBoxFilled inactive'}>
-      <input maxLength={1} placeholder={displayValue} onChange={handleChange}/>
-    </div>
+  render () {
+    const renderTime = Date.now();
+    let divRef = React.createRef<HTMLDivElement>();
+    
+    const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      if (renderTime + 100 > Date.now()){
+        return;
+      }
+      let dispatchValue = 0;
+      let displayNum = Number(this.props.displayValue);
+      if (event.type === 'click'){
+        if (displayNum === 0 || displayNum === 4){
+          dispatchValue = 1;
+        } else {
+          dispatchValue = displayNum + 1;
+        }
+      } else if (event.type === 'contextmenu'){
+        if (displayNum === 0 || displayNum === 1){
+          dispatchValue = 4;
+        } else {
+          dispatchValue = displayNum - 1;
+        }
+      }
+  
+      this.props.updatePlays({value: dispatchValue, i:this.props.location[0], j:this.props.location[1]});
     }
-    </div>
-  );
+  
+    const handleWiggle = () => {
+      if (divRef.current){
+        divRef.current.className = 'error'
+        setTimeout(()=>{
+          if (divRef.current){
+            divRef.current.className = 'BoardBoxPreset'
+          }
+        }, 600)
+      }
+    }
+    const closuredHandleWiggle = throttler(handleWiggle, 600)
+  
+    return (
+      <div>
+      {this.props.preset ? 
+      <div ref={divRef} className='BoardBoxPreset' onClick={!this.props.gameWon ? closuredHandleWiggle : ()=>{return}} onContextMenu={!this.props.gameWon ? closuredHandleWiggle : ()=>{return}}>
+        {this.props.displayValue}
+      </div>
+      :
+      <div className={this.props.gameWon ? 'BoardBoxFinal' : this.props.displayValue === '' ? 'BoardBox' : 'BoardBoxFilled'} onClick={!this.props.gameWon ? handleClick : ()=>{return} } onContextMenu={!this.props.gameWon ? handleClick : ()=>{return} }>
+        {this.props.displayValue}
+      </div>
+      }
+      </div>
+    );
+  }
 }
 
-export default BoardBox;
+const throttler = (cb: Function, delay: number) => {
+  let lastInvoked = 0;
+  const inner = (...args: any[]) => {
+    if (lastInvoked + delay < Date.now()){
+      lastInvoked = Date.now()
+      cb(...args);
+    }
+  }
+  return inner;
+}
+
+export default connect(null, mapDispatch)(BoardBox);

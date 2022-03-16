@@ -4,7 +4,8 @@ import { getElapsed } from '../slices/boardSlice';
 
 function Timer() {
   const startTime = useAppSelector((state) => state.board.startTime);
-  let currentTime = useAppSelector((state) => state.board.currentTime)
+  const gameWon = useAppSelector((state) => state.board.gameWon);
+  let currentTime = useAppSelector((state) => state.board.currentTime);
   let minutes: number = 0; 
   let seconds: number = 0; 
   let milliseconds: number = 0;
@@ -46,16 +47,18 @@ function Timer() {
 
   const dispatch = useAppDispatch();
   useEffect(()=>{
-    const timer = setTimeout(
-      ()=> {
-        const elapsedTime = Date.now() - startTime;
-        dispatch(getElapsed(elapsedTime))},
-       50);
-    return () => clearTimeout(timer);
+    if (!gameWon){
+      const timer = setTimeout(
+        ()=> {
+          const elapsedTime = Date.now() - startTime;
+          dispatch(getElapsed(elapsedTime))},
+        50);
+      return () => clearTimeout(timer);
+    }
   });
 
   return (
-    <div className="timer">
+    <div className={gameWon ? 'timerFinished' : 'timer'}>
       {timerString}
     </div>
   );
