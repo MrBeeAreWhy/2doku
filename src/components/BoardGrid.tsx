@@ -23,8 +23,6 @@ function BoardGrid() {
             } else {
               displayBoxes.push(<BoardBox preset={false} key={`x${[i]}y${[j]}`} displayValue={``} location={[i,j]} gameWon={gameWon}/>)
             }
-        } else if (initialBoard[i][j] === 9){
-
         } else {
           displayBoxes.push(<BoardBox preset={true} key={`x${[i]}y${[j]}`} displayValue={`${initialBoard[i][j]}`} location={[i,j]} gameWon={gameWon}/>)
         }

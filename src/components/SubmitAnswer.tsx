@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { verifySolution } from '../slices/boardSlice';
 
@@ -6,7 +6,7 @@ function SubmitAnswer() {
   const allFilled = useAppSelector((state) => state.board.boardFilled);
   const dispatch = useAppDispatch();
   const clickHandler = () => {
-    dispatch(verifySolution())
+    dispatch(verifySolution('submit'))
   }
 
   return (

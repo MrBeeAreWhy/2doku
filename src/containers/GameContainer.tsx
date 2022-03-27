@@ -5,6 +5,7 @@ import SubmitAnswer from '../components/SubmitAnswer';
 import { useAppSelector } from '../app/hooks';
 
 function GameContainer() {
+
   const gameStarted = useAppSelector((state) => state.board.gameStarted);
   const gameWon = useAppSelector((state) => state.board.gameWon);
   return (
