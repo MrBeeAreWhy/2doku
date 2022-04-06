@@ -3,8 +3,9 @@ import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { getElapsed } from '../slices/boardSlice';
 
 function Timer() {
-  const startTime = useAppSelector((state) => state.board.startTime);
-  const gameWon = useAppSelector((state) => state.board.gameWon);
+  const { startTime, gameWon, invalidAnswer, displayTimeLoss } = useAppSelector((state) => state.board);
+  const dispatch = useAppDispatch();
+  let timerRef = React.createRef<HTMLDivElement>();
   let currentTime = useAppSelector((state) => state.board.currentTime);
   let minutes: number = 0; 
   let seconds: number = 0; 
@@ -45,11 +46,16 @@ function Timer() {
   //string is 8 characters total
   timerString = timerString.slice(0, 8);
 
-  const dispatch = useAppDispatch();
+  
   useEffect(()=>{
     if (!gameWon){
       const timer = setTimeout(
-        ()=> {
+        () => {
+          if (invalidAnswer && timerRef.current){
+            timerRef.current.className = 'timerError';
+          } else if (timerRef.current) {
+            timerRef.current.className = 'timer';
+          }
           const elapsedTime = Date.now() - startTime;
           dispatch(getElapsed(elapsedTime))},
         50);
@@ -58,8 +64,9 @@ function Timer() {
   });
 
   return (
-    <div className={gameWon ? 'timerFinished' : 'timer'}>
+    <div ref={timerRef} className={gameWon ? 'timerFinished' : 'timer'}>
       {timerString}
+      {displayTimeLoss ? <div className='timeLoss'>-5s</div> : null}
     </div>
   );
 }
