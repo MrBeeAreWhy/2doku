@@ -2,6 +2,7 @@ import React, { MouseEvent } from 'react';
 import { updatePlays } from '../slices/boardSlice';
 import { connect } from 'react-redux'
 
+
 const mapDispatch = (dispatch: any) => {
   return {
       updatePlays: (payload: any) => dispatch(updatePlays(payload))

@@ -3,6 +3,7 @@ import BoardBox from './BoardBox';
 import StartGame from './StartGame';
 import { useAppSelector } from '../app/hooks';
 
+
 function BoardGrid() {
   const initialBoard = useAppSelector((state) => state.board.board);
   const activePlays = useAppSelector((state) => state.board.activePlays);
@@ -42,7 +43,7 @@ function BoardGrid() {
         <div className="vertDiv"></div>
       </div>
       :
-        <StartGame /> }
+        <StartGame />}       
     </div>
   );
 }
