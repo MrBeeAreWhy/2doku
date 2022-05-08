@@ -23,18 +23,18 @@ Clone this repo and then "npm i" to install necessary dependencies.
 
 For a development experience with HMR:
 
-* npm run serve*
+* npm run serve
 to start the Express server to serve the puzzle information
 
-## npm run dev
+* npm run dev
 to run the application at localhost:8080 with HMR.
 
 For the current build experience:
 
-## npm run build
+* npm run build
 to generate the bundle
 
-## npm run serve
+* npm run serve
 to start the Express server to serve the puzzle information
 
 and browse to localhost:3000 for Express to serve the application and puzzle information.
