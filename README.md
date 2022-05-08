@@ -23,7 +23,7 @@ Clone this repo and then "npm i" to install necessary dependencies.
 
 For a development experience with HMR:
 
-## npm run serve
+* npm run serve*
 to start the Express server to serve the puzzle information
 
 ## npm run dev
