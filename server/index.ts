@@ -1,12 +1,11 @@
 import express, { Request, Response, NextFunction } from 'express';
-import expressStaticGzip from 'express-static-gzip';
 import path from 'path';
 import router from './routes/routes';
 const app = express();
 const PORT = 3000;
 
 const serveIndex = (req: Request, res: Response) => {
-  res.status(200).sendFile(path.join(__dirname, '..', 'public', 'index.html'))
+  res.status(200).sendFile(path.join(__dirname, '..', 'dist', 'index.html'))
 }
 
 const invalidRoute = (req: Request, res: Response, next: NextFunction) => {
@@ -25,8 +24,8 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
 }
 
 app.use(express.json());
-app.use('/dist', expressStaticGzip(path.join(__dirname, '..', 'dist'), {}));
 app.get('/', serveIndex)
+app.use('/dist', express.static(path.join(__dirname, '..', 'dist'), {}));
 app.use('/puzzle', router)
 app.use(invalidRoute) //catch all.
 app.use(errorHandler) //handles errors.

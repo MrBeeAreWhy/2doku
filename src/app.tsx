@@ -11,12 +11,14 @@ function App() {
   const invalidAnswer = useAppSelector((state) => state.board.invalidAnswer);
   const displayTimeLoss = useAppSelector((state) => state.board.displayTimeLoss);
   const gameInit = useAppSelector((state) => state.board.gameInit);
+
   useEffect(() => {
       fetch('/puzzle')
         .then(data => data.json())
         .then(data => dispatch(initBoard(data.boardInfo)))
         .catch(err => console.log(err));
   }, []);
+
   useEffect(() => {
     const resumingGame = localStorage.getItem('resuming');
     if (resumingGame === 'true'){
@@ -24,7 +26,11 @@ function App() {
         dispatch(resumeGame());
       }
     }
-  }, [gameInit]); //recall useEffect once the game board is initialized -- the async is done.
+  }, [gameInit]); 
+
+
+  //dispatches actions to revert that an invalid answer was submitted, and to
+  //prevent the time loss from being displayed repeatedly
   useEffect(() => {
     if (invalidAnswer === true){
       setTimeout(()=> {
@@ -37,6 +43,7 @@ function App() {
       }, 2000)
     }
   }, [invalidAnswer, displayTimeLoss])
+
   return (
     <div className="App">
       <Header />
