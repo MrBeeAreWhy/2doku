@@ -17,7 +17,7 @@ type BoardBoxProps = {
   gameWon: boolean;
 };
 
-class BoardBox extends React.Component<BoardBoxProps> { //need access to shouldComponentUpdate, so utilizing class syntaxt for this component -- prevents a lot of rerenders
+class BoardBox extends React.Component<BoardBoxProps> { //need access to shouldComponentUpdate, so utilizing class syntax for this component -- prevents a lot of rerenders
   shouldComponentUpdate(nextProps:any):boolean {
     if (nextProps.gameWon !== this.props.gameWon){
       return true;
@@ -29,6 +29,8 @@ class BoardBox extends React.Component<BoardBoxProps> { //need access to shouldC
     return true;
   }
   render () {
+    //**NOTE TO SELF */
+    //refactor all these functions to not be part of the render method
     const renderTime = Date.now();
     let divRef = React.createRef<HTMLDivElement>();
     
