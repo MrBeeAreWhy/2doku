@@ -24,13 +24,15 @@ Clone this repo and then "npm i" to install necessary dependencies.
 For a development experience with HMR:
 
 * npm run serve
-* 
-* to start the Express server to serve the puzzle information
+
+to start the Express server to serve the puzzle information
 
 * npm run dev
 
 
 to run the application at localhost:8080 with HMR.
+
+
 
 For the current build experience:
 
@@ -52,4 +54,7 @@ and browse to localhost:3000 for Express to serve the application and puzzle inf
 Issues:
 - The server generates a new puzzle every time it is queried (intended to store in database, retrieve if already generated)
   - The client does not properly handle the above issue
-- Puzzle generation needs refactoring.
+  - Puzzle data should include puzzle data
+- Puzzle generation needs refactoring (brute force implementation is slow)
+- Client does not properly handle mismatches between currently loaded data and served data
+
